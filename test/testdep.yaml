@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: testngx
+  namespace: default
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: testngx
+  template:
+    metadata:
+      labels:
+        app: testngx
+    spec:
+      schedulerName: test-pod-maxnum-scheduler # 指定调度插件，需要与自定义的插件名匹配。
+      containers:
+        - image: nginx:1.18-alpine
+          imagePullPolicy: IfNotPresent
+          name: testngx
+          ports:
+            - containerPort: 80
