@@ -37,7 +37,24 @@ func (s *TestPodNumScheduling) RemovePod(ctx context.Context, state *framework.C
 	return  nil
 }
 
-// PreFilter 前置过滤方法 (主要过滤pod条件)
+const (
+	SchedulingLabelKeyState = "scheduling"
+	SchedulingLabelValueState = "true"
+)
+
+// Filter 过滤方法 (过滤node条件)
+func (s *TestPodNumScheduling) Filter(ctx context.Context, state *framework.CycleState, pod *v1.Pod, nodeInfo *framework.NodeInfo) *framework.Status {
+
+	for k, v := range  nodeInfo.Node().Labels{
+		if k == SchedulingLabelKeyState && v != SchedulingLabelValueState {
+			return framework.NewStatus(framework.Unschedulable,"这个节点设置不可调度")
+		}
+	}
+	return framework.NewStatus(framework.Success)
+
+}
+
+// PreFilter 前置过滤方法 (过滤pod条件)
 func (s *TestPodNumScheduling) PreFilter(ctx context.Context, state *framework.CycleState, p *v1.Pod) *framework.Status {
 	klog.V(3).Infof("当前被prefilter 的POD名称是:%s\n",p.Name)
 	// informer list pod
@@ -65,7 +82,9 @@ func(*TestPodNumScheduling) Name() string{
 	return TestSchedulingName
 }
 
-var _ framework.PreFilterPlugin = &TestPodNumScheduling{} // 检查是否实现接口对象
+// 检查是否实现接口对象
+var _ framework.PreFilterPlugin = &TestPodNumScheduling{}
+var _ framework.FilterPlugin = &TestPodNumScheduling{}
 func NewTestPodNumScheduling(configuration runtime.Object, f framework.Handle) (framework.Plugin, error){
 	// 注入配置文件参数
 	args := &Args{}
