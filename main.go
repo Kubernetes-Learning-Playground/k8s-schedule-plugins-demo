@@ -8,10 +8,13 @@ import (
 	"os"
 )
 func main() {
-	//
+	// 接入插件
 	command := app.NewSchedulerCommand(
 		app.WithPlugin(src.TestSchedulingName, src.NewTestPodNumScheduling), // 调度插件
+		app.WithPlugin(src.TestScoreSchedulingName, src.NewTestScoreScheduling),
 	)
+
+
 	logs.InitLogs()
 	defer logs.FlushLogs()
 

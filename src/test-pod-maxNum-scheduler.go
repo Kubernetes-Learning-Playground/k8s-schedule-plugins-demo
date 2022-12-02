@@ -16,7 +16,7 @@ import (
 	自定义调度插件：自定义最大POD数量的调度插件
  */
 
-const TestSchedulingName="test-pod-maxnum-scheduler"
+const TestSchedulingName = "test-pod-maxnum-scheduler"
 
 // 调度器对象
 type TestPodNumScheduling struct {
@@ -37,6 +37,7 @@ func (s *TestPodNumScheduling) RemovePod(ctx context.Context, state *framework.C
 	return  nil
 }
 
+// 通过label过滤不能调度的节点
 const (
 	SchedulingLabelKeyState = "scheduling"
 	SchedulingLabelValueState = "true"
@@ -47,6 +48,7 @@ func (s *TestPodNumScheduling) Filter(ctx context.Context, state *framework.Cycl
 
 	for k, v := range  nodeInfo.Node().Labels{
 		if k == SchedulingLabelKeyState && v != SchedulingLabelValueState {
+			klog.V(3).Infof("这个节点设置不可调度\n")
 			return framework.NewStatus(framework.Unschedulable,"这个节点设置不可调度")
 		}
 	}
@@ -97,4 +99,3 @@ func NewTestPodNumScheduling(configuration runtime.Object, f framework.Handle) (
 		args: args,
 	}, nil
 }
-

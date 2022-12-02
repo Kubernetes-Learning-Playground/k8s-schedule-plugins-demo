@@ -13,7 +13,7 @@ spec:
       labels:
         app: test-scheduling
     spec:
-      nodeName: vm-0-16-centos # 更换自己主机节点
+      nodeName: vm-0-16-centos # 更换主机节点
       serviceAccount: test-scheduling-sa # 绑定的serviceAccount
       containers:
         - name: tests-scheduling
@@ -24,14 +24,14 @@ spec:
             - --config=/etc/kubernetes/config.yaml
             - --v=3
           volumeMounts:
-            - name: config
+            - name: config # 挂载目录
               mountPath: /etc/kubernetes
             - name: app
               mountPath: /app
       volumes:
-        - name: config
+        - name: config # 挂载对象
           configMap:
             name: test-scheduling-config
-        - name: app
+        - name: app # 应用程序对象
           hostPath:
             path: /root/k8s-schedule-practice

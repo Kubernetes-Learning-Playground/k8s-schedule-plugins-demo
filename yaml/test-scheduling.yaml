@@ -160,6 +160,12 @@ data:
           preFilter:
             enabled:
             - name: "test-pod-maxnum-scheduler"
+          filter:
+            enabled:
+            - name: "test-pod-maxnum-scheduler"
+          score:
+            enabled:
+            - name: "test-pod-score-scheduler"
         pluginConfig:
           - name: test-pod-maxnum-scheduler
             args:
