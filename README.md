@@ -80,3 +80,8 @@ Events:
     ├── scheduling-deployment.yaml
     └── test-scheduling.yaml
 ```
+
+### 参考：
+```bigquery
+https://github.com/kubernetes-sigs/scheduler-plugins
+```

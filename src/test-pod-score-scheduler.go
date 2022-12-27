@@ -19,8 +19,12 @@ const TestScoreSchedulingName = "test-pod-score-scheduler"
 type TestScoreScheduling struct {
 }
 
+const (
+	NodeName = "vm-0-16-centos"
+)
+
 func (s *TestScoreScheduling) Score(ctx context.Context, state *framework.CycleState, p *v1.Pod, nodeName string) (int64, *framework.Status) {
-	if nodeName=="dsjs"{
+	if nodeName == NodeName {
 		return 20, framework.NewStatus(framework.Success)
 	}
 	return 10, framework.NewStatus(framework.Success)
