@@ -12,9 +12,6 @@ import (
 	"sigs.k8s.io/scheduler-plugins/apis/config"
 )
 
-
-
-
 // Allocatable is a score plugin that favors nodes based on their allocatable
 // resources.
 // Allocatable 调度器对象

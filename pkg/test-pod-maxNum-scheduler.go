@@ -1,4 +1,4 @@
-package src
+package pkg
 
 import (
 	"context"
@@ -14,14 +14,14 @@ import (
 
 /*
 	自定义调度插件：自定义最大POD数量的调度插件
- */
+*/
 
 const TestSchedulingName = "test-pod-maxnum-scheduler"
 
-// 调度器对象
+// TestPodNumScheduling 调度器对象
 type TestPodNumScheduling struct {
-	fact 	informers.SharedInformerFactory
-	args  	*Args
+	fact informers.SharedInformerFactory
+	args *Args
 }
 
 // Args 配置文件参数
@@ -30,26 +30,26 @@ type Args struct {
 }
 
 func (s *TestPodNumScheduling) AddPod(ctx context.Context, state *framework.CycleState, podToSchedule *v1.Pod, podInfoToAdd *framework.PodInfo, nodeInfo *framework.NodeInfo) *framework.Status {
-	return  nil
+	return nil
 }
 
 func (s *TestPodNumScheduling) RemovePod(ctx context.Context, state *framework.CycleState, podToSchedule *v1.Pod, podInfoToRemove *framework.PodInfo, nodeInfo *framework.NodeInfo) *framework.Status {
-	return  nil
+	return nil
 }
 
 // 通过label过滤不能调度的节点
 const (
-	SchedulingLabelKeyState = "scheduling"
+	SchedulingLabelKeyState   = "scheduling"
 	SchedulingLabelValueState = "true"
 )
 
 // Filter 过滤方法 (过滤node条件)
 func (s *TestPodNumScheduling) Filter(ctx context.Context, state *framework.CycleState, pod *v1.Pod, nodeInfo *framework.NodeInfo) *framework.Status {
 
-	for k, v := range  nodeInfo.Node().Labels{
+	for k, v := range nodeInfo.Node().Labels {
 		if k == SchedulingLabelKeyState && v != SchedulingLabelValueState {
 			klog.V(3).Infof("这个节点设置不可调度\n")
-			return framework.NewStatus(framework.Unschedulable,"这个节点设置不可调度")
+			return framework.NewStatus(framework.Unschedulable, "这个节点设置不可调度")
 		}
 	}
 	return framework.NewStatus(framework.Success)
@@ -58,7 +58,7 @@ func (s *TestPodNumScheduling) Filter(ctx context.Context, state *framework.Cycl
 
 // PreFilter 前置过滤方法 (过滤pod条件)
 func (s *TestPodNumScheduling) PreFilter(ctx context.Context, state *framework.CycleState, p *v1.Pod) *framework.Status {
-	klog.V(3).Infof("当前被prefilter 的POD名称是:%s\n",p.Name)
+	klog.V(3).Infof("当前被prefilter 的POD名称是:%s\n", p.Name)
 	// informer list pod
 	podList, err := s.fact.Core().V1().Pods().Lister().Pods(p.Namespace).List(labels.Everything())
 	if err != nil {
@@ -80,14 +80,15 @@ func (s *TestPodNumScheduling) PreFilterExtensions() framework.PreFilterExtensio
 	return s
 }
 
-func(*TestPodNumScheduling) Name() string{
+func (*TestPodNumScheduling) Name() string {
 	return TestSchedulingName
 }
 
 // 检查是否实现接口对象
 var _ framework.PreFilterPlugin = &TestPodNumScheduling{}
 var _ framework.FilterPlugin = &TestPodNumScheduling{}
-func NewTestPodNumScheduling(configuration runtime.Object, f framework.Handle) (framework.Plugin, error){
+
+func NewTestPodNumScheduling(configuration runtime.Object, f framework.Handle) (framework.Plugin, error) {
 	// 注入配置文件参数
 	args := &Args{}
 	if err := frameworkruntime.DecodeInto(configuration, args); err != nil {

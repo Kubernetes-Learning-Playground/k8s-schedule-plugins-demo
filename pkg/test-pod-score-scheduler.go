@@ -1,4 +1,4 @@
-package src
+package pkg
 
 import (
 	"context"
@@ -30,7 +30,7 @@ func (s *TestScoreScheduling) Score(ctx context.Context, state *framework.CycleS
 	return 10, framework.NewStatus(framework.Success)
 }
 
-func (s *TestScoreScheduling) NormalizeScore(ctx context.Context, state *framework.CycleState, p *v1.Pod, scores framework.NodeScoreList) *framework.Status{
+func (s *TestScoreScheduling) NormalizeScore(ctx context.Context, state *framework.CycleState, p *v1.Pod, scores framework.NodeScoreList) *framework.Status {
 	var min, max int64 = 0, 0
 	//求出最小分数和最大分数
 	for _, score := range scores {
@@ -43,7 +43,7 @@ func (s *TestScoreScheduling) NormalizeScore(ctx context.Context, state *framewo
 	}
 	// 特殊处理
 	if max == min {
-		min = min-1
+		min = min - 1
 	}
 	// 得分
 	for i, score := range scores {
@@ -59,13 +59,12 @@ func (s *TestScoreScheduling) ScoreExtensions() framework.ScoreExtensions {
 }
 
 func (s *TestScoreScheduling) AddPod(ctx context.Context, state *framework.CycleState, podToSchedule *v1.Pod, podInfoToAdd *framework.PodInfo, nodeInfo *framework.NodeInfo) *framework.Status {
-	return  nil
+	return nil
 }
 
 func (s *TestScoreScheduling) RemovePod(ctx context.Context, state *framework.CycleState, podToSchedule *v1.Pod, podInfoToRemove *framework.PodInfo, nodeInfo *framework.NodeInfo) *framework.Status {
-	return  nil
+	return nil
 }
-
 
 // Filter 过滤方法 (过滤node条件)
 func (s *TestScoreScheduling) Filter(ctx context.Context, state *framework.CycleState, pod *v1.Pod, nodeInfo *framework.NodeInfo) *framework.Status {
@@ -85,7 +84,7 @@ func (s *TestScoreScheduling) PreFilterExtensions() framework.PreFilterExtension
 	return s
 }
 
-func(*TestScoreScheduling) Name() string{
+func (*TestScoreScheduling) Name() string {
 	return TestSchedulingName
 }
 
@@ -93,14 +92,13 @@ func(*TestScoreScheduling) Name() string{
 var _ framework.PreFilterPlugin = &TestScoreScheduling{}
 var _ framework.FilterPlugin = &TestScoreScheduling{}
 var _ framework.ScorePlugin = &TestScoreScheduling{}
-func NewTestScoreScheduling(configuration runtime.Object, f framework.Handle) (framework.Plugin, error){
+
+func NewTestScoreScheduling(configuration runtime.Object, f framework.Handle) (framework.Plugin, error) {
 	// 注入配置文件参数
 	args := &Args{}
 	if err := frameworkruntime.DecodeInto(configuration, args); err != nil {
 		return nil, err
 	}
 
-	return &TestPodNumScheduling{
-
-	}, nil
+	return &TestPodNumScheduling{}, nil
 }
