@@ -1,4 +1,4 @@
-package pkg
+package scheduler
 
 import (
 	"context"
@@ -71,7 +71,6 @@ func (s *TestScoreScheduling) Filter(ctx context.Context, state *framework.Cycle
 	klog.Info("开始过滤")
 
 	return framework.NewStatus(framework.Success)
-
 }
 
 // PreFilter 前置过滤方法 (过滤pod条件)

@@ -155,18 +155,11 @@ data:
     leaderElection:
       leaderElect: false
     profiles:
-      - schedulerName: test-pod-maxnum-scheduler
+      - schedulerName: test-custom-scheduler
         plugins:
-          preFilter:
-            enabled:
-            - name: "test-pod-maxnum-scheduler"
           filter:
             enabled:
-            - name: "test-pod-maxnum-scheduler"
+            - name: "test-custom-scheduler"
           score:
             enabled:
-            - name: "test-pod-score-scheduler"
-        pluginConfig:
-          - name: test-pod-maxnum-scheduler
-            args:
-              maxPods: 6
+            - name: "test-custom-scheduler"

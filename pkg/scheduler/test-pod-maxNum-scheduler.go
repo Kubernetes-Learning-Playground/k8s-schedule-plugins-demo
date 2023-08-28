@@ -1,4 +1,4 @@
-package pkg
+package scheduler
 
 import (
 	"context"
@@ -57,7 +57,7 @@ func (s *TestPodNumScheduling) Filter(ctx context.Context, state *framework.Cycl
 }
 
 // PreFilter 前置过滤方法 (过滤pod条件)
-func (s *TestPodNumScheduling) PreFilter(ctx context.Context, state *framework.CycleState, p *v1.Pod) *framework.Status {
+func (s *TestPodNumScheduling) PreFilter(_ context.Context, state *framework.CycleState, p *v1.Pod) *framework.Status {
 	klog.V(3).Infof("当前被prefilter 的POD名称是:%s\n", p.Name)
 	// informer list pod
 	podList, err := s.fact.Core().V1().Pods().Lister().Pods(p.Namespace).List(labels.Everything())

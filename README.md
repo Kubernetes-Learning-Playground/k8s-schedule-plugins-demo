@@ -5,7 +5,7 @@
 ### 项目部署
 1. 编译应用程序
 ```bigquery
-docker run —rm -it -v /root/k8s-schedule-practice:/app -w /app -e GOPROXY=https://goproxy.cn -e CGO_ENABLED=0  golang:1.18.7-alpine3.15 go build -o ./test-pod-maxNum-scheduler .
+docker run --rm -it -v /root/k8s-schedule-practice:/app -w /app -e GOPROXY=https://goproxy.cn -e CGO_ENABLED=0  golang:1.18.7-alpine3.15 go build -o ./test-pod-maxNum-scheduler .
 ```
 2. 修改与适配yaml(请依照自己环境适配)
 ```bigquery

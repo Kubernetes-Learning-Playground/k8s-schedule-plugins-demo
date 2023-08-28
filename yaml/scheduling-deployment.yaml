@@ -19,7 +19,7 @@ spec:
         - name: tests-scheduling
           image: alpine:3.12
           imagePullPolicy: IfNotPresent
-          command: ["/app/test-pod-maxnum-scheduler"]
+          command: ["/app/test-pod-maxNum-scheduler"]
           args:
             - --config=/etc/kubernetes/config.yaml
             - --v=3

@@ -2,8 +2,7 @@ package main
 
 import (
 	"fmt"
-	"k8s-scheduler-plugins-practice/pkg"
-	"k8s-scheduler-plugins-practice/pkg/noderesource"
+	"k8s-scheduler-plugins-practice/pkg/scheduler"
 	"k8s.io/component-base/logs"
 	"k8s.io/kubernetes/cmd/kube-scheduler/app"
 	"os"
@@ -12,9 +11,10 @@ import (
 func main() {
 	// 接入插件
 	cmd := app.NewSchedulerCommand(
-		app.WithPlugin(pkg.TestSchedulingName, pkg.NewTestPodNumScheduling), // 调度插件
-		app.WithPlugin(pkg.TestScoreSchedulingName, pkg.NewTestScoreScheduling),
-		app.WithPlugin(noderesource.TestNodeResourceSchedulingName, noderesource.NewAllocatable),
+		// 调度插件
+		//app.WithPlugin(scheduler.TestSchedulingName, scheduler.NewTestPodNumScheduling),
+		//app.WithPlugin(scheduler.TestScoreSchedulingName, scheduler.NewTestScoreScheduling),
+		app.WithPlugin(scheduler.CustomSchedulingName, scheduler.NewCustomScheduling),
 	)
 
 	logs.InitLogs()
