@@ -13,7 +13,7 @@ spec:
       labels:
         app: testngx
     spec:
-      schedulerName: test-custom-scheduler # 指定调度插件，需要与自定义的插件名匹配。
+      schedulerName: test-uniform-scheduler  # 指定调度插件，需要与自定义的插件名匹配。
       containers:
         - image: nginx:1.18-alpine
           imagePullPolicy: IfNotPresent

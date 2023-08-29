@@ -1,11 +1,15 @@
-## k8s自定义调度插件
+## k8s自定义调度插件(学习使用)
 ### 项目思路与功能
-
+基于k8s-scheduler提供的framework扩展能力，实现简易版调度插件。
+- 自定义均匀节点资源的调度插件(cpu,mem)
+- 自定义打分调度插件()
+- 自定义限制节点的pod数量的调度插件
 
 ### 项目部署
 1. 编译应用程序
 ```bigquery
-docker run --rm -it -v /root/k8s-schedule-practice:/app -w /app -e GOPROXY=https://goproxy.cn -e CGO_ENABLED=0  golang:1.18.7-alpine3.15 go build -o ./test-pod-maxNum-scheduler .
+docker build -t test-scheduler-plugins:v1 .
+docker run --rm -it -v /root/k8s-schedule-practice:/app -w /app -e GOPROXY=https://goproxy.cn -e CGO_ENABLED=0  golang:1.20.4-alpine3.18 go build -o ./test-pod-maxNum-scheduler .
 ```
 2. 修改与适配yaml(请依照自己环境适配)
 ```bigquery
@@ -66,19 +70,6 @@ Events:
   Type     Reason            Age   From                       Message
   ----     ------            ----  ----                       -------
   Warning  FailedScheduling  6h9m  test-pod-maxnum-scheduler  0/1 nodes are available: 1 POD数量超过，不能调度，最多只能调度6.
-```
-
-### 项目目录
-```bigquery
-├── main.go
-├── src     # 插件逻辑
-│   ├── test-pod-maxNum-scheduler.go # 
-│   └── test-pod-score-scheduler.go
-├── test    # 测试pod yaml
-│   └── testdep.yaml
-└── yaml # 部署插件用
-    ├── scheduling-deployment.yaml
-    └── test-scheduling.yaml
 ```
 
 ### 参考：

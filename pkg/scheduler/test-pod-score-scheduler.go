@@ -15,8 +15,16 @@ import (
 
 const TestScoreSchedulingName = "test-pod-score-scheduler"
 
-// 调度器对象
+// TestScoreScheduling 调度器插件
 type TestScoreScheduling struct {
+}
+
+func (s *TestScoreScheduling) AddPod(ctx context.Context, state *framework.CycleState, podToSchedule *v1.Pod, podToAdd *v1.Pod, nodeInfo *framework.NodeInfo) *framework.Status {
+	return nil
+}
+
+func (s *TestScoreScheduling) RemovePod(ctx context.Context, state *framework.CycleState, podToSchedule *v1.Pod, podToRemove *v1.Pod, nodeInfo *framework.NodeInfo) *framework.Status {
+	return nil
 }
 
 const (
@@ -48,7 +56,7 @@ func (s *TestScoreScheduling) NormalizeScore(ctx context.Context, state *framewo
 	// 得分
 	for i, score := range scores {
 		scores[i].Score = (score.Score - min) * framework.MaxNodeScore / (max - min)
-		klog.Infof("节点: %v, Score: %v   Pod:  %v", scores[i].Name, scores[i].Score, p.GetName())
+		klog.Infof("[Node]: %v, [Score]: %v, [Pod]:  %v", scores[i].Name, scores[i].Score, p.GetName())
 	}
 	return framework.NewStatus(framework.Success, "")
 
@@ -58,24 +66,17 @@ func (s *TestScoreScheduling) ScoreExtensions() framework.ScoreExtensions {
 	return s
 }
 
-func (s *TestScoreScheduling) AddPod(ctx context.Context, state *framework.CycleState, podToSchedule *v1.Pod, podInfoToAdd *framework.PodInfo, nodeInfo *framework.NodeInfo) *framework.Status {
-	return nil
-}
 
-func (s *TestScoreScheduling) RemovePod(ctx context.Context, state *framework.CycleState, podToSchedule *v1.Pod, podInfoToRemove *framework.PodInfo, nodeInfo *framework.NodeInfo) *framework.Status {
-	return nil
-}
 
 // Filter 过滤方法 (过滤node条件)
 func (s *TestScoreScheduling) Filter(ctx context.Context, state *framework.CycleState, pod *v1.Pod, nodeInfo *framework.NodeInfo) *framework.Status {
-	klog.Info("开始过滤")
-
+	klog.Info("score plugin filter step start...")
 	return framework.NewStatus(framework.Success)
 }
 
 // PreFilter 前置过滤方法 (过滤pod条件)
 func (s *TestScoreScheduling) PreFilter(ctx context.Context, state *framework.CycleState, p *v1.Pod) *framework.Status {
-	klog.Info("开始预过滤")
+	klog.Info("score plugin prefilter step start...")
 	return framework.NewStatus(framework.Success)
 }
 

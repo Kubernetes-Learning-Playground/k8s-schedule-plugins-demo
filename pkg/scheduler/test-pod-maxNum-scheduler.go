@@ -18,7 +18,7 @@ import (
 
 const TestSchedulingName = "test-pod-maxnum-scheduler"
 
-// TestPodNumScheduling 调度器对象
+// TestPodNumScheduling 调度器插件对象
 type TestPodNumScheduling struct {
 	fact informers.SharedInformerFactory
 	args *Args
@@ -29,11 +29,12 @@ type Args struct {
 	MaxPods int `json:"maxPods,omitempty"`
 }
 
-func (s *TestPodNumScheduling) AddPod(ctx context.Context, state *framework.CycleState, podToSchedule *v1.Pod, podInfoToAdd *framework.PodInfo, nodeInfo *framework.NodeInfo) *framework.Status {
+
+func (s *TestPodNumScheduling) AddPod(ctx context.Context, state *framework.CycleState, podToSchedule *v1.Pod, podToAdd *v1.Pod, nodeInfo *framework.NodeInfo) *framework.Status {
 	return nil
 }
 
-func (s *TestPodNumScheduling) RemovePod(ctx context.Context, state *framework.CycleState, podToSchedule *v1.Pod, podInfoToRemove *framework.PodInfo, nodeInfo *framework.NodeInfo) *framework.Status {
+func (s *TestPodNumScheduling) RemovePod(ctx context.Context, state *framework.CycleState, podToSchedule *v1.Pod, podToRemove *v1.Pod, nodeInfo *framework.NodeInfo) *framework.Status {
 	return nil
 }
 
@@ -48,8 +49,8 @@ func (s *TestPodNumScheduling) Filter(ctx context.Context, state *framework.Cycl
 
 	for k, v := range nodeInfo.Node().Labels {
 		if k == SchedulingLabelKeyState && v != SchedulingLabelValueState {
-			klog.V(3).Infof("这个节点设置不可调度\n")
-			return framework.NewStatus(framework.Unschedulable, "这个节点设置不可调度")
+			klog.V(3).Info("This node is unschedulable")
+			return framework.NewStatus(framework.Unschedulable, "This node is unschedulable")
 		}
 	}
 	return framework.NewStatus(framework.Success)
@@ -58,21 +59,20 @@ func (s *TestPodNumScheduling) Filter(ctx context.Context, state *framework.Cycl
 
 // PreFilter 前置过滤方法 (过滤pod条件)
 func (s *TestPodNumScheduling) PreFilter(_ context.Context, state *framework.CycleState, p *v1.Pod) *framework.Status {
-	klog.V(3).Infof("当前被prefilter 的POD名称是:%s\n", p.Name)
+	klog.V(3).Infof("prefilter step start [Pod] %v\n", p.Name)
 	// informer list pod
 	podList, err := s.fact.Core().V1().Pods().Lister().Pods(p.Namespace).List(labels.Everything())
 	if err != nil {
-		klog.V(3).Infof("POD informer list 发生错误\n")
+		klog.Errorf("pod informer list error: \n", err)
 		return framework.NewStatus(framework.Error)
 	}
 
 	// 过滤
 	if s.args.MaxPods > 0 && len(podList) > s.args.MaxPods {
-		klog.V(3).Infof("POD数量超过可调度数量，不能调度\n", p.Name)
-		return framework.NewStatus(framework.Unschedulable,
-			fmt.Sprintf("POD数量超过，不能调度，最多只能调度%d", s.args.MaxPods))
+		klog.V(3).Infof("The number of [Pod] %v exceeds the schedulable number and cannot be scheduled\n", p.Name)
+		return framework.NewStatus(framework.Unschedulable, fmt.Sprintf("POD数量超过，不能调度，最多只能调度%d", s.args.MaxPods))
 	}
-	klog.V(3).Infof("POD成功调度:%s\n", p.Name)
+	klog.V(3).Infof("[Pod] %v successfully scheduled\n", p.Name)
 	return framework.NewStatus(framework.Success)
 }
 

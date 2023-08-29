@@ -12,9 +12,9 @@ func main() {
 	// 接入插件
 	cmd := app.NewSchedulerCommand(
 		// 调度插件
-		//app.WithPlugin(scheduler.TestSchedulingName, scheduler.NewTestPodNumScheduling),
-		//app.WithPlugin(scheduler.TestScoreSchedulingName, scheduler.NewTestScoreScheduling),
-		app.WithPlugin(scheduler.CustomSchedulingName, scheduler.NewCustomScheduling),
+		app.WithPlugin(scheduler.TestSchedulingName, scheduler.NewTestPodNumScheduling),
+		app.WithPlugin(scheduler.TestScoreSchedulingName, scheduler.NewTestScoreScheduling),
+		app.WithPlugin(scheduler.PluginName, scheduler.NewUniformResourcePlugin),
 	)
 
 	logs.InitLogs()
