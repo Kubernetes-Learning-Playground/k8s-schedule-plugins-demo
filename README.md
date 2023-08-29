@@ -5,6 +5,7 @@
 - 自定义打分调度插件()
 - 自定义限制节点的pod数量的调度插件
 
+![](https://github.com/Kubernetes-Learning-Playground/k8s-schedule-plugins-demo/blob/main/image/img.png?raw=true)
 ### 项目部署
 1. 编译应用程序
 ```bigquery
